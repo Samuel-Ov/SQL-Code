@@ -6,6 +6,8 @@ select *
 from covidvaccination
 order by 2,3
 
+--Selecting data to be used 
+
 select cd.continent, cd.date, cd.population, cd.location, cd.total_cases, cd.total_deaths, cv.new_tests, cv.new_vaccinations
 from coviddata as cd
 join covidvaccination cv
@@ -13,8 +15,8 @@ join covidvaccination cv
 	and cd.date= cv.date
 order by continent
 
-
 ---Checking the likelyhood of death compared to cases, percentage of vaccination per countries
+
 select cd.continent, cd.date, cd.population, cd.location, (cd.total_deaths/cd.total_cases)*100 as DeathPercentage, (cv.new_vaccinations/cd.population)*100 as Vacpercentage
 from coviddata as cd
 join covidvaccination cv
@@ -35,7 +37,7 @@ where continent is not null
 group by continent
 order by DeathCount desc
 
---Global Number
+--Global Number break down covid death cases and vaccination
 
 select date, SUM(new_cases) as total_cases, SUM(cast(new_deaths as int)) as total_deaths, SUM(cast(new_deaths as int))/SUM(new_cases)*100 as Deathpercnt---,total_deaths, population,(total_deaths/total_cases)*100 as Dpercentage 
 from PortfolioProject..coviddata
@@ -99,6 +101,8 @@ where cd.continent is not null
 --order by 2,3
 select *, (RollingPeopleVaccinated/population)*100
 from #PercentPopulationVaccinated
+
+--Creating view to store for visualizations
 
 create view PercentPopulationVaccinated as
 select cd.continent, cd.location, cd.date,cd.population, cv.new_vaccinations
