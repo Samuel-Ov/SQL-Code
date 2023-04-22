@@ -39,12 +39,30 @@ create table branch_supplier (
 );
 
 insert into employee values (100, "David", "Wole", "1997-11-17", "M", 124700, Null, Null);
+
+update employee
+set branch_id = 1
+where emp_id = 101;
+
 insert into employee values (101, "Jan", "Wallace", "1997-11-17", "F", 28700, 100, 1);
+
 insert into employee values (102, "Michael", "Scott", "1997-11-17", "M", 29700, 100,null);
+
+update employee
+set branch_id = 2
+where emp_id = 102;
+
 insert into employee values (103, "Angela", "Martin", "1997-11-17", "F", 84700, 102,2);
 insert into employee values (104, "Kelly", "Kapoor", "1997-11-17", "F", 64700, 102,2);
 insert into employee values (105, "Stanley", "Hudson", "1997-11-17", "M", 74700, 102,2);
+
+
 insert into employee values (106, "Josh", "Porter", "1997-11-17", "M", 44700, 100,null);
+
+update employee
+set branch_id = 3
+where emp_id = 106;
+
 insert into employee values (107, "Andy", "Bernard", "1997-11-17", "M", 24700, 106,3);
 insert into employee values (108, "Jim", "Halpert", "1997-11-17", "M", 24700, 106,3);
 
@@ -52,11 +70,6 @@ insert into employee values (108, "Jim", "Halpert", "1997-11-17", "M", 24700, 10
 insert into Branch Values (1, "corporate", 100, "2006-02-09");
 insert into Branch Values (2, "Scranton", 102, "1992-04-09");
 insert into Branch Values (3, "Stamford", 106, "1990-02-13");
-
-
-update employer
-set branch_id = 3
-where emp_id = 106;
 
 insert into branch_supplier values(2, "Hmmer Mill","Paper");
 insert into branch_supplier values(2, "Uni-ball", "Writing Utensiles");
