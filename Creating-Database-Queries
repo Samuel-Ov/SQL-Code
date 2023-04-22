@@ -1,0 +1,214 @@
+
+create table Branch (
+    branch_id int primary key,
+    branch_name varchar(20),
+    mgr_id int,
+    mgr_start_date date,
+    foreign key (mgr_id) references employer (emp_id) on delete set null
+); 
+
+alter table employee
+add foreign key (branch_id)
+references branch (branch_id)
+on delete set null;
+
+describe client;
+
+create table client (
+    client_id int primary key,
+    client_name varchar(20),
+    branch_id int,
+    foreign key (branch_id) references branch (branch_id) on delete set null
+); 
+
+create  table Work_With(
+    emp_id int,
+    client_id int,
+    total_sales int,
+    primary key (emp_id, client_id),
+    foreign key (emp_id) references employer(emp_id) on delete cascade,
+    foreign key (client_id) references client(client_id) on delete cascade
+);
+
+create table branch_supplier (
+    branch_id int,
+    supplier_name char(40),
+    supply_type char(40),
+    primary key (branch_id, supplier_name),
+    foreign key (branch_id) references branch(branch_id) on delete cascade
+);
+
+insert into employee values (100, "David", "Wole", "1997-11-17", "M", 124700, Null, Null);
+insert into employee values (101, "Jan", "Wallace", "1997-11-17", "F", 28700, 100, 1);
+insert into employee values (102, "Michael", "Scott", "1997-11-17", "M", 29700, 100,null);
+insert into employee values (103, "Angela", "Martin", "1997-11-17", "F", 84700, 102,2);
+insert into employee values (104, "Kelly", "Kapoor", "1997-11-17", "F", 64700, 102,2);
+insert into employee values (105, "Stanley", "Hudson", "1997-11-17", "M", 74700, 102,2);
+insert into employee values (106, "Josh", "Porter", "1997-11-17", "M", 44700, 100,null);
+insert into employee values (107, "Andy", "Bernard", "1997-11-17", "M", 24700, 106,3);
+insert into employee values (108, "Jim", "Halpert", "1997-11-17", "M", 24700, 106,3);
+
+
+insert into Branch Values (1, "corporate", 100, "2006-02-09");
+insert into Branch Values (2, "Scranton", 102, "1992-04-09");
+insert into Branch Values (3, "Stamford", 106, "1990-02-13");
+
+
+update employer
+set branch_id = 3
+where emp_id = 106;
+
+insert into branch_supplier values(2, "Hmmer Mill","Paper");
+insert into branch_supplier values(2, "Uni-ball", "Writing Utensiles");
+insert into branch_supplier values(3, "Patriot Paper","Paper");
+insert into branch_supplier values(2, "J.T.Forms and Labels","Custom");
+insert into branch_supplier values(3, "Uni-ball", "Writing Utensiles");
+insert into branch_supplier values(3, "Hmmer Mill","Paper");
+insert into branch_supplier values(3, "Stamford Labels","Customs for");
+
+insert into client values ( 400, "Dunmore Highschool", 2);
+insert into client values ( 401, "Lackawana Country", 2);
+insert into client values ( 402, "Fedex", 3);
+insert into client values ( 403, "John Daly", 3);
+insert into client values ( 404, "Scranton Whitegapes", 2);
+insert into client values ( 405, "Time Newspaper", 3);
+insert into client values ( 406, "Fedex", 2);
+
+insert into Work_With Values (105, 400, 55000);
+insert into Work_With Values (102, 401, 551000);
+insert into Work_With Values (108, 402, 55000);
+insert into Work_With Values (107, 403, 5000);
+insert into Work_With Values (108, 403, 51000);
+insert into Work_With Values (105, 404, 35000);
+insert into Work_With Values (107, 405, 55000);
+insert into Work_With Values (102, 406, 12000);
+insert into Work_With Values (105, 406, 15000);
+
+alter table employer rename employee;
+
+select* 
+from employee
+order by sex, first_name;
+
+---find the first 5 employee in the talbe
+select* 
+from employee
+limit 5;
+
+--fine the first and last name of all employee
+select first_name as forename, last_name as surname 
+from employee;
+
+---find out all the different gender
+select distinct(sex)
+from employee;
+
+select count (emp_id)
+from employee;
+
+--find the number of female employee born after 1970
+select count(emp_id)
+from employee
+where sex= "F" and birth_date > "1971-01-01";
+
+--average salaries for all employee
+select avg(salary)
+from employee
+where sex = "M";
+
+--sum of salaries
+select sum(salary)
+from employee;
+
+--find how many males ands females employee
+select count(sex), sex
+from employee
+group by sex;
+
+--find how many males ands females employee salary
+select sum(salary), sex
+from employee
+group by sex;
+
+--find the total sales of each salesman
+select Sum(total_sales),emp_id
+from work_with
+group by emp_id;
+
+--find the money each client spent
+select Sum(total_sales),client_id
+from work_with
+group by client_id;
+
+---to find any characters (% =any number of random character, _ = single characher)
+select*
+from client
+where client_name like "%country%";
+
+select e.emp_id, e.first_name, b.branch_name
+from employee e
+join branch b
+    on e.emp_id=b.mgr_id;
+
+
+----Nested Queries
+---find nemes of all the employee if they have sold  over 30,000 to a single client
+
+select e.emp_id, e.first_name, e.last_name
+from employee e
+where e.emp_id in (
+    select w.emp_id
+    from work_with as w
+    where w.total_sales > 30000
+);
+
+select c.client_name
+from client c
+where c.branch_id = (
+    select b.branch_id
+    from branch as b
+    where b.mgr_id = 102
+    limit 1
+);
+
+
+----trigger test/set up on mysql
+create table trigger_test(
+    message varchar (100)
+)
+
+delimiter $$
+create
+    trigger my_trigger before INSERT
+    on each employee 
+    for each row begin
+        insert into trigger_test values ("added new employee");
+    end$$
+delimiter;
+
+delimiter $$
+create
+    trigger my_trigger1 before INSERT
+    on each employee 
+    for each row begin
+        insert into trigger_test values ("New.first_name");
+    end$$
+delimiter;
+
+
+delimiter $$ ---1st
+create
+    trigger my_trigger before INSERT/----update/delete
+    on each employee 
+    for each row begin
+        if New.sex = "M" then
+            insert into trigger_test values("added male employee");
+        elseif New.sex = "F" then
+            insert into trigger_test values("added female employee");
+        else
+        insert into trigger_test values ("added new employee");
+        end if;
+    end$$-----2nd
+delimiter; ----3rd
+
+--drop trigger my_trigger
