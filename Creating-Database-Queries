@@ -1,3 +1,4 @@
+--Creating Tables for Company database
 
 create table Branch (
     branch_id int primary key,
