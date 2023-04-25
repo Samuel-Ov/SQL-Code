@@ -1,0 +1,18 @@
+#--- Developed a Database to Analyze and Visualize Hotel Booking Data
+
+---data source: https://absentdata.com/data-analysis/where-to-find-data/
+
+with holets as (
+select* from Project..Y2018
+union
+select* from Project..Y2019
+union
+select* from Project..Y2020
+
+select* from hotels
+left join project..market_segment
+on hotels.market_segment =market_segment.market_segment
+left join project..meal_cost
+on meal_cost.meal =hotels.meal)
+
+---Now sql is developed for Power BI
